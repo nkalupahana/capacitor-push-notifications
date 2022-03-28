@@ -1,6 +1,6 @@
 {
-  "name": "@capacitor/push-notifications",
-  "version": "1.0.8",
+  "name": "@moody-app/capacitor-push-notifications",
+  "version": "1.0.10",
   "description": "The Push Notifications API provides access to native push notifications.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -11,7 +11,7 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "CapacitorPushNotifications.podspec"
+    "MoodyAppCapacitorPushNotifications.podspec"
   ],
   "author": "Ionic <hi@ionicframework.com>",
   "license": "MIT",
