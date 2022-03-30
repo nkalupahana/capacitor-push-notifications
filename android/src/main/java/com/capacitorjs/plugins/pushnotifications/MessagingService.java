@@ -3,6 +3,7 @@ package com.capacitorjs.plugins.pushnotifications;
 import android.app.NotificationManager;
 import android.service.notification.StatusBarNotification;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -23,21 +24,21 @@ public class MessagingService extends FirebaseMessagingService {
                 if (remoteMessage.getData().containsKey("cleanUp")) {
                     // Find the latest notification in all delivered notifications
                     NotificationManager notificationManager = getSystemService(NotificationManager.class);
-                    ArrayList<Integer> ids = new ArrayList<>();
+                    ArrayList<Pair<String, Integer>> data = new ArrayList<>();
                     StatusBarNotification latestNotif = null;
                     for (StatusBarNotification notif : notificationManager.getActiveNotifications()) {
-                        ids.add(notif.getId());
+                        data.add(new Pair<String, Integer>(notif.getTag(), notif.getId()));
                         if (latestNotif == null || latestNotif.getPostTime() < notif.getPostTime()) {
                             latestNotif = notif;
                         }
                     }
 
                     // Remove the latest from the list of all delivered
-                    if (latestNotif != null) ids.remove((Integer) latestNotif.getId());
+                    if (latestNotif != null) ids.remove(new Pair<String, Integer>(latestNotif.getTag(), latestNotif.getId()));
 
                     // And remove all other notifications
-                    for (Integer id : ids) {
-                        notificationManager.cancel(id);
+                    for (Pair<String, Integer> pair : ids) {
+                        notificationManager.cancel(pair.getKey(), pair.getValue());
                     }
                 }
             }
