@@ -22,23 +22,25 @@ public class MessagingService extends FirebaseMessagingService {
             // If this is a data-only cleanUp notification:
             if (remoteMessage.getData().size() > 0) {
                 if (remoteMessage.getData().containsKey("cleanUp")) {
-                    // Find the latest notification in all delivered notifications
+                    // Find the latest local notification in all delivered notifications
                     NotificationManager notificationManager = getSystemService(NotificationManager.class);
-                    ArrayList<Pair<String, Integer>> ids = new ArrayList<>();
+                    ArrayList<Integer> ids = new ArrayList<>();
                     StatusBarNotification latestNotif = null;
                     for (StatusBarNotification notif : notificationManager.getActiveNotifications()) {
-                        ids.add(Pair.create(notif.getTag(), notif.getId()));
+                        // Push notifications always have id 0 (identified by tag instead)
+                        if (notif.getId() == 0) continue;
+                        ids.add(notif.getId());
                         if (latestNotif == null || latestNotif.getPostTime() < notif.getPostTime()) {
                             latestNotif = notif;
                         }
                     }
 
                     // Remove the latest from the list of all delivered
-                    if (latestNotif != null) ids.remove(Pair.create(latestNotif.getTag(), latestNotif.getId()));
+                    if (latestNotif != null) ids.remove((Integer) latestNotif.getId());
 
                     // And remove all other notifications
-                    for (Pair<String, Integer> pair : ids) {
-                        notificationManager.cancel(pair.first, pair.second);
+                    for (Integer id : ids) {
+                        notificationManager.cancel(id);
                     }
                 }
             }
